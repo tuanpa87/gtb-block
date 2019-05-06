@@ -125,16 +125,24 @@
 
     save: function save(props) {
       var attributes = props.attributes;
+      var imgBlock;
 
-      var cardRender = function cardPc(bp, src, alt) {
-        if (!src) return null;
-        var className = "img-fluid";
+      var cardRender = function cardPc(bp) {
+        var className = "img-fluid",
+          src,
+          alt;
 
         if (bp == "sp") {
-          className = className + " img-sp";
+          className += " img-sp";
+          src = attributes.sp.imageUrl;
+          alt = attributes.sp.imageAlt;
         } else {
-          className = className + " img-pc";
+          className += " img-pc";
+          src = attributes.pc.imageUrl;
+          alt = attributes.pc.imageAlt;
         }
+
+        if (!src) return null;
 
         if (alt) {
           return el("img", {
@@ -152,26 +160,48 @@
         });
       };
 
-      return el(
-        "div",
-        {
-          className: "card"
-        },
-        el(
+      if (attributes.pc && attributes.sp) {
+        imgBlock = el(
           "div",
           {
-            className: "d-none d-md-block"
+            className: "card"
           },
-          cardRender("pc", attributes.pc.imageUrl, attributes.pc.imageAlt)
-        ),
-        el(
+          el(
+            "div",
+            {
+              className: "d-none d-md-block"
+            },
+            cardRender("pc")
+          ),
+          el(
+            "div",
+            {
+              className: "d-block d-md-none"
+            },
+            cardRender("sp")
+          )
+        );
+      } else if (attributes.pc && !attributes.sp) {
+        imgBlock = el(
           "div",
           {
-            className: "d-block d-md-none"
+            className: "card"
           },
-          cardRender("sp", attributes.sp.imageUrl, attributes.sp.imageAlt)
-        )
-      );
+          cardRender("pc")
+        );
+      } else if (!attributes.pc && attributes.sp) {
+        imgBlock = el(
+          "div",
+          {
+            className: "card"
+          },
+          cardRender("sp")
+        );
+      } else {
+        imgBlock = null;
+      }
+
+      return imgBlock;
     }
   });
 })(window.wp.blocks, window.wp.element, window.wp.editor, window.wp.components);
@@ -625,15 +655,24 @@
 //   },
 
 //   save({ attributes }) {
-//     const cardRender = (bp, src, alt) => {
-//       if (!src) return null;
+//     let imgBlock;
+//     const cardRender = bp => {
 
-//       let className = "img-fluid";
+
+//       let className = "img-fluid",
+//         src,
+//         alt;
 //       if (bp == "sp") {
 //         className += " img-sp";
+//         src = attributes.sp.imageUrl;
+//         alt = attributes.sp.imageAlt;
 //       } else {
 //         className += " img-pc";
+//         src = attributes.pc.imageUrl;
+//         alt = attributes.pc.imageAlt;
 //       }
+
+//       if (!src) return null;
 
 //       if (alt) {
 //         return <img className={className} src={src} alt={alt} />;
@@ -643,15 +682,21 @@
 //       return <img className={className} src={src} alt="" aria-hidden="true" />;
 //     };
 
-//     return (
-//       <div className="card">
-//         <div className="d-none d-md-block">
-//           {cardRender("pc", attributes.pc.imageUrl, attributes.pc.imageAlt)}
+//     if (attributes.pc && attributes.sp) {
+//       imgBlock = (
+//         <div className="card">
+//           <div className="d-none d-md-block">{cardRender("pc")}</div>
+//           <div className="d-block d-md-none">{cardRender("sp")}</div>
 //         </div>
-//         <div className="d-block d-md-none">
-//           {cardRender("sp", attributes.sp.imageUrl, attributes.sp.imageAlt)}
-//         </div>
-//       </div>
-//     );
+//       );
+//     } else if (attributes.pc && !attributes.sp) {
+//       imgBlock = <div className="card">{cardRender("pc")}</div>;
+//     } else if (!attributes.pc && attributes.sp) {
+//       imgBlock = <div className="card">{cardRender("sp")}</div>;
+//     } else {
+//       imgBlock = null;
+//     }
+
+//     return imgBlock;
 //   }
 // });
