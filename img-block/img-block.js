@@ -348,8 +348,6 @@
 //   save({ attributes }) {
 //     let imgBlock;
 //     const cardRender = bp => {
-//       if (!src) return null;
-
 //       let className = "img-fluid",
 //         src,
 //         alt;
@@ -362,6 +360,8 @@
 //         src = attributes.pc.imageUrl;
 //         alt = attributes.pc.imageAlt;
 //       }
+
+//       if (!src) return null;
 
 //       if (alt) {
 //         return <img className={className} src={src} alt={alt} />;

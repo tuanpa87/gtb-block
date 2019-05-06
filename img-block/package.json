@@ -1,0 +1,15 @@
+{
+  "name": "img-block",
+  "version": "1.0.0",
+  "description": "",
+  "main": "img-block.js",
+  "scripts": {
+    "start": "wp-scripts start",
+    "build": "wp-scripts build"
+  },
+  "author": "TuanPa",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/scripts": "3.1.0"
+  }
+}

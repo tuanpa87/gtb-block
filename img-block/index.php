@@ -16,7 +16,9 @@ function img_block_register() {
   
 	wp_register_script(
 		'img_block_admin_js',
-		plugins_url( 'img-block.js', __FILE__ ),
+		//plugins_url( 'img-block.js', __FILE__ ),
+		//ES Next
+		plugins_url( 'build/index.js', __FILE__ ),
 		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'underscore' )
 	);
 
