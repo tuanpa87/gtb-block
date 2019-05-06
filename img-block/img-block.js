@@ -134,7 +134,7 @@
                     type: "image",
                     value: attributes.imageID,
                     render: function render(_obj2) {
-                      var open = _obj1.open;
+                      var open = _obj2.open;
                       return getImageButton("sp", open);
                     }
                   })
