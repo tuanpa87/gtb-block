@@ -1,8 +1,11 @@
 (function(blocks, element, editor, components) {
   var el = element.createElement;
+  var Fragment = element.Fragment;
   var registerBlockType = blocks.registerBlockType;
   var MediaUpload = editor.MediaUpload;
+  var TabPanel = components.TabPanel;
   var Button = components.Button;
+
   registerBlockType("img-block/main", {
     title: "IMG",
     icon: "heart",
@@ -34,6 +37,10 @@
       var attributes = props.attributes,
         className = props.className,
         setAttributes = props.setAttributes;
+
+      // var onSelectTab = function onSelectTab(tabName) {
+      //   console.log('Selecting tab', tabName);
+      // };
 
       var getImageButton = function getImagePcButton(bp, openEvent) {
         var bpAttributes;
@@ -69,57 +76,71 @@
       };
 
       return el(
-        "div",
+        TabPanel,
         {
-          className: "container"
+          className: "block-img-container", //onSelect={ onSelectTab }
+          tabs: [
+            {
+              name: "pc",
+              title: "PC",
+              className: "img-upload-pc"
+            },
+            {
+              name: "sp",
+              title: "SP",
+              className: "img-upload-sp"
+            }
+          ]
         },
-        el(
-          "div",
-          {
-            className: "img-upload-pc"
-          },
-          el("p", null, " Select image for pc "),
-          el(MediaUpload, {
-            onSelect: function onSelect(media) {
-              setAttributes({
-                pc: {
-                  imageAlt: media.alt,
-                  imageUrl: media.url
-                }
-              });
-            },
-            type: "image",
-            value: attributes.imageID,
-            render: function render(_obj) {
-              var open = _obj.open;
-              return getImageButton("pc", open);
-            }
-          })
-        ),
-        el("br", null),
-        el(
-          "div",
-          {
-            className: "img-upload-sp"
-          },
-          el("p", null, " Select image for smartphone "),
-          el(MediaUpload, {
-            onSelect: function onSelect(media) {
-              setAttributes({
-                sp: {
-                  imageAlt: media.alt,
-                  imageUrl: media.url
-                }
-              });
-            },
-            type: "image",
-            value: attributes.imageID,
-            render: function render(_obj) {
-              var open = _obj.open;
-              return getImageButton("sp", open);
-            }
-          })
-        )
+        function(tab) {
+          return el(
+            "div",
+            null,
+            tab.name === "pc"
+              ? el(
+                  Fragment,
+                  null,
+                  el("p", null, " Select image for pc "),
+                  el(MediaUpload, {
+                    onSelect: function onSelect(media) {
+                      setAttributes({
+                        pc: {
+                          imageAlt: media.alt,
+                          imageUrl: media.url
+                        }
+                      });
+                    },
+                    type: "image",
+                    value: attributes.imageID,
+                    render: function render(_obj1) {
+                      var open = _obj1.open;
+                      return getImageButton("pc", open);
+                    }
+                  })
+                )
+              : el(
+                  Fragment,
+                  null,
+                  el("p", null, " Select image for smartphone "),
+                  el(MediaUpload, {
+                    onSelect: function onSelect(media) {
+                      setAttributes({
+                        sp: {
+                          imageAlt: media.alt,
+                          imageUrl: media.url
+                        }
+                      });
+                    },
+                    type: "image",
+                    value: attributes.imageID,
+                    render: function render(_obj2) {
+                      var open = _obj1.open;
+                      return getImageButton("sp", open);
+                    }
+                  })
+                )
+          );
+        }
       );
     },
 
@@ -206,13 +227,11 @@
   });
 })(window.wp.blocks, window.wp.element, window.wp.editor, window.wp.components);
 
-
-
 /* ES Next Opt */
-
 // const { RichText, MediaUpload, PlainText } = wp.editor;
 // const { registerBlockType } = wp.blocks;
-// const { Button } = wp.components;
+// const { Button, TabPanel } = wp.components;
+// const { Fragment } = wp.element;
 
 // registerBlockType("img-block/main", {
 //   title: "Img",
@@ -241,6 +260,10 @@
 //     }
 //   },
 //   edit({ attributes, className, setAttributes }) {
+//     // const onSelectTab = ( tabName ) => {
+//     //     console.log( 'Selecting tab', tabName );
+//     // };
+
 //     const getImageButton = (bp, openEvent) => {
 //       var bpAttributes;
 //       if (bp == "sp") {
@@ -269,44 +292,63 @@
 //     };
 
 //     return (
-//       <div className="container">
-//         <div className="img-upload-pc">
-//           <p> Select image for pc </p>
-//           <MediaUpload
-//             onSelect={media => {
-//               setAttributes({
-//                 pc: { imageAlt: media.alt, imageUrl: media.url }
-//               });
-//             }}
-//             type="image"
-//             value={attributes.imageID}
-//             render={({ open }) => getImageButton("pc", open)}
-//           />
-//         </div>
-
-//         <br />
-
-//         <div className="img-upload-sp">
-//           <p> Select image for smartphone </p>
-//           <MediaUpload
-//             onSelect={media => {
-//               setAttributes({
-//                 sp: { imageAlt: media.alt, imageUrl: media.url }
-//               });
-//             }}
-//             type="image"
-//             value={attributes.imageID}
-//             render={({ open }) => getImageButton("sp", open)}
-//           />
-//         </div>
-//       </div>
+//       <TabPanel
+//         className="block-img-container"
+//         //onSelect={ onSelectTab }
+//         tabs={[
+//           {
+//             name: "pc",
+//             title: "PC",
+//             className: "img-upload-pc"
+//           },
+//           {
+//             name: "sp",
+//             title: "SP",
+//             className: "img-upload-sp"
+//           }
+//         ]}
+//       >
+//         {tab => (
+//           <div>
+//             {tab.name === "pc" ? (
+//               <Fragment>
+//                 <p> Select image for pc </p>
+//                 <MediaUpload
+//                   onSelect={media => {
+//                     setAttributes({
+//                       pc: { imageAlt: media.alt, imageUrl: media.url }
+//                     });
+//                   }}
+//                   type="image"
+//                   value={attributes.imageID}
+//                   render={({ open }) => getImageButton("pc", open)}
+//                 />
+//               </Fragment>
+//             ) : (
+//               <Fragment>
+//                 <p> Select image for smartphone </p>
+//                 <MediaUpload
+//                   onSelect={media => {
+//                     setAttributes({
+//                       sp: { imageAlt: media.alt, imageUrl: media.url }
+//                     });
+//                   }}
+//                   type="image"
+//                   value={attributes.imageID}
+//                   render={({ open }) => getImageButton("sp", open)}
+//                 />
+//               </Fragment>
+//             )}
+//           </div>
+//         )}
+//       </TabPanel>
 //     );
 //   },
 
 //   save({ attributes }) {
 //     let imgBlock;
 //     const cardRender = bp => {
-
+//       if (!src) return null;
 
 //       let className = "img-fluid",
 //         src,
@@ -320,8 +362,6 @@
 //         src = attributes.pc.imageUrl;
 //         alt = attributes.pc.imageAlt;
 //       }
-
-//       if (!src) return null;
 
 //       if (alt) {
 //         return <img className={className} src={src} alt={alt} />;
